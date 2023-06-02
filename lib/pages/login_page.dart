@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../routes.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -8,7 +10,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController phoneCnt = TextEditingController();
+  TextEditingController phoneCnt = TextEditingController(text: "123456");
 
   bool loginIsStarted = false;
 
@@ -32,32 +34,33 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget buildPhoneNo() {
     return Container(
-      margin: EdgeInsets.only(left: 20, right: 20),
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(color: Colors.white),
+      margin: const EdgeInsets.only(left: 20, right: 20),
+      padding: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(color: Colors.white),
       child: TextField(
         controller: phoneCnt,
-        decoration:
-            InputDecoration(hintText: "Phone No", icon: Icon(Icons.person)),
+        decoration: const InputDecoration(
+            hintText: "Phone No", icon: Icon(Icons.person)),
       ),
     );
   }
 
   Widget buildLoginButton() {
     return Container(
-      margin: EdgeInsets.only(left: 20, right: 20),
-      padding: EdgeInsets.all(20),
+      margin: const EdgeInsets.only(left: 20, right: 20),
+      padding: const EdgeInsets.all(20),
       width: double.infinity,
-      decoration: BoxDecoration(color: Colors.white),
+      decoration: const BoxDecoration(color: Colors.white),
       child: loginIsStarted
-          ? SizedBox(width: 50, height: 50, child: CircularProgressIndicator())
+          ? const SizedBox(
+              width: 50, height: 50, child: CircularProgressIndicator())
           : SizedBox(
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
                   attemptLogin();
                 },
-                child: Text("Giriş Yap"),
+                child: const Text("Giriş Yap"),
               ),
             ),
     );
@@ -65,8 +68,8 @@ class _LoginPageState extends State<LoginPage> {
 
   attemptLogin() {
     if (phoneCnt.text.isEmpty) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Lütfen telefon No giriniz")));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Lütfen telefon No giriniz")));
     } else {
       startFakeRequest();
     }
@@ -77,17 +80,16 @@ class _LoginPageState extends State<LoginPage> {
       loginIsStarted = true;
     });
 
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         loginIsStarted = false;
       });
 
       if (phoneCnt.text == "123456") {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Bilgileriniz Doğru")));
+        Navigator.of(context).pushReplacementNamed(Routes.home);
       } else {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Bilgileriniz Hatalı")));
+            .showSnackBar(const SnackBar(content: Text("Bilgileriniz Hatalı")));
       }
     });
   }
