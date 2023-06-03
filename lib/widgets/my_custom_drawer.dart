@@ -29,39 +29,39 @@ class _MyCustomDrawerState extends State<MyCustomDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (context) {
-      return Drawer(
-        child: ListView(
-          children: [
-            DrawerHeader(
+    return Drawer(
+      child: ListView(
+        children: [
+          Observer(builder: (context) {
+            return DrawerHeader(
               decoration: BoxDecoration(color: themeStore.primaryColor),
               child: Text("Hoşgeldin ${authStore.user?.firstName ?? " "}"),
-            ),
-            ListTile(
-              title: const Text("Rota Haritası"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              },
-            ),
-            ListTile(
-              title: const Text("Bekleyen Paketler"),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.of(context).pushNamed(Routes.waitingPackages);
-              },
-            ),
-            ListTile(
-              title: const Text("Çıkış Yap"),
-              onTap: () {
-                authStore.logout();
-                /*Navigator.pop(context);
+            );
+          }),
+          ListTile(
+            title: const Text("Rota Haritası"),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.of(context).popUntil((route) => route.isFirst);
+            },
+          ),
+          ListTile(
+            title: const Text("Bekleyen Paketler"),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.of(context).pushNamed(Routes.waitingPackages);
+            },
+          ),
+          ListTile(
+            title: const Text("Çıkış Yap"),
+            onTap: () {
+              authStore.logout();
+              /*Navigator.pop(context);
                 Navigator.of(context).pushReplacementNamed(Routes.login);*/
-              },
-            )
-          ],
-        ),
-      );
-    });
+            },
+          )
+        ],
+      ),
+    );
   }
 }

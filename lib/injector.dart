@@ -10,6 +10,7 @@ Future init() async {
   serviceLocator.registerFactory(() => AuthStore());
   serviceLocator.registerFactory(() => ThemeStore());
   serviceLocator.registerFactory(() => PackageStore());
+
   serviceLocator.registerLazySingleton(() => RootStore(
       authStore: serviceLocator.get<AuthStore>(),
       packageStore: serviceLocator.get<PackageStore>(),

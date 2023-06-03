@@ -17,6 +17,8 @@ abstract class _AuthStore with Store {
     if (phoneNo == "123456") {
       user =
           UserModel(firstName: "Hakkıcan", lastName: "Bülüç", phoneNo: phoneNo);
+    } else {
+      user = null;
     }
   }
 

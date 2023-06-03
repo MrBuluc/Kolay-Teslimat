@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:kolayca_teslimat/stores/auth_store.dart';
 import 'package:kolayca_teslimat/stores/root_store.dart';
 import 'package:kolayca_teslimat/stores/theme_store.dart';
@@ -57,11 +58,13 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           Hero(
               tag: "logo",
-              child: Icon(
-                Icons.local_shipping,
-                size: 100,
-                color: themeStore.primaryColor,
-              )),
+              child: Observer(builder: (context) {
+                return Icon(
+                  Icons.local_shipping,
+                  size: 100,
+                  color: themeStore.primaryColor,
+                );
+              })),
           buildPhoneNo(),
           buildLoginButton(),
         ],
@@ -76,8 +79,14 @@ class _LoginPageState extends State<LoginPage> {
       decoration: const BoxDecoration(color: Colors.white),
       child: TextField(
         controller: phoneCnt,
-        decoration: const InputDecoration(
-            hintText: "Phone No", icon: Icon(Icons.person)),
+        decoration: InputDecoration(
+            hintText: "Phone No",
+            icon: Observer(builder: (context) {
+              return Icon(
+                Icons.person,
+                color: themeStore.primaryColor,
+              );
+            })),
       ),
     );
   }
