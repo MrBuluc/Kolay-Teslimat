@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:kolayca_teslimat/stores/auth_store.dart';
+import 'package:kolayca_teslimat/stores/root_store.dart';
+import 'package:kolayca_teslimat/stores/theme_store.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../routes.dart';
 
@@ -10,9 +15,31 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController phoneCnt = TextEditingController(text: "123456");
+  TextEditingController phoneCnt = TextEditingController();
 
   bool loginIsStarted = false;
+
+  late RootStore rootStore;
+  late ThemeStore themeStore;
+  late AuthStore authStore;
+
+  @override
+  void initState() {
+    super.initState();
+
+    SharedPreferences.getInstance().then((sharedPreference) {
+      phoneCnt.text = sharedPreference.getString("phoneNo") ?? "";
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    rootStore = Provider.of<RootStore>(context);
+    themeStore = rootStore.themeStore;
+    authStore = rootStore.authStore;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +54,17 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [buildPhoneNo(), buildLoginButton()],
+        children: [
+          Hero(
+              tag: "logo",
+              child: Icon(
+                Icons.local_shipping,
+                size: 100,
+                color: themeStore.primaryColor,
+              )),
+          buildPhoneNo(),
+          buildLoginButton(),
+        ],
       ),
     );
   }
@@ -71,7 +108,18 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Lütfen telefon No giriniz")));
     } else {
-      startFakeRequest();
+      startLoginRequest();
+    }
+  }
+
+  startLoginRequest() {
+    authStore.login(phoneCnt.text);
+
+    if (authStore.isLoggedIn) {
+      Navigator.of(context).pushReplacementNamed(Routes.home);
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Bilgileriniz Hatalı")));
     }
   }
 
@@ -83,6 +131,10 @@ class _LoginPageState extends State<LoginPage> {
     Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         loginIsStarted = false;
+      });
+
+      SharedPreferences.getInstance().then((sharedPreferences) {
+        sharedPreferences.setString("phoneNo", phoneCnt.text);
       });
 
       if (phoneCnt.text == "123456") {
