@@ -7,6 +7,7 @@ import 'package:kolayca_teslimat/stores/root_store.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await injector.init();
   runApp(MultiProvider(providers: [
     Provider.value(value: injector.serviceLocator.get<RootStore>())

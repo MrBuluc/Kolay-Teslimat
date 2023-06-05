@@ -14,7 +14,6 @@ class MyCustomDrawer extends StatefulWidget {
 }
 
 class _MyCustomDrawerState extends State<MyCustomDrawer> {
-  late RootStore rootStore;
   late ThemeStore themeStore;
   late AuthStore authStore;
 
@@ -22,7 +21,7 @@ class _MyCustomDrawerState extends State<MyCustomDrawer> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    rootStore = Provider.of<RootStore>(context);
+    RootStore rootStore = Provider.of<RootStore>(context);
     themeStore = rootStore.themeStore;
     authStore = rootStore.authStore;
   }
@@ -35,7 +34,20 @@ class _MyCustomDrawerState extends State<MyCustomDrawer> {
           Observer(builder: (context) {
             return DrawerHeader(
               decoration: BoxDecoration(color: themeStore.primaryColor),
-              child: Text("Hoşgeldin ${authStore.user?.firstName ?? " "}"),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Hoşgeldin ${authStore.user?.fullName ?? " "}",
+                    style: const TextStyle(fontSize: 24),
+                  ),
+                  Text(
+                    "Kazancınız: ₺ ${authStore.user?.balanceAmount ?? ""}",
+                    style: const TextStyle(fontSize: 18),
+                  )
+                ],
+              ),
             );
           }),
           ListTile(
@@ -56,8 +68,8 @@ class _MyCustomDrawerState extends State<MyCustomDrawer> {
             title: const Text("Çıkış Yap"),
             onTap: () {
               authStore.logout();
-              /*Navigator.pop(context);
-                Navigator.of(context).pushReplacementNamed(Routes.login);*/
+              Navigator.pop(context);
+              Navigator.of(context).pushReplacementNamed(Routes.login);
             },
           )
         ],

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:kolayca_teslimat/models/package_model.dart';
+import 'package:kolayca_teslimat/stores/package_store.dart';
+import 'package:kolayca_teslimat/stores/root_store.dart';
+import 'package:kolayca_teslimat/stores/theme_store.dart';
+import 'package:provider/provider.dart';
 
 import '../routes.dart';
 
@@ -11,80 +16,29 @@ class WaitingPackagesPage extends StatefulWidget {
 }
 
 class _WaitingPackagesPageState extends State<WaitingPackagesPage> {
-  List<Package> packages = [
-    Package(
-        id: "1",
-        typeName: "Standart Gönderim",
-        status: "Depoda",
-        price: 15.5,
-        receiver: "Gökhan Karaca +905123456789",
-        sender: "Amazon"),
-    Package(
-        id: "2",
-        typeName: "Standart Gönderim",
-        status: "Depoda",
-        price: 15.5,
-        receiver: "Gökhan Karaca +905123456789",
-        sender: "Amazon"),
-    Package(
-        id: "3",
-        typeName: "Standart Gönderim",
-        status: "Depoda",
-        price: 15.5,
-        receiver: "Gökhan Karaca +905123456789",
-        sender: "Amazon"),
-    Package(
-        id: "4",
-        typeName: "Standart Gönderim",
-        status: "Depoda",
-        price: 15.5,
-        receiver: "Gökhan Karaca +905123456789",
-        sender: "Amazon"),
-    Package(
-        id: "5",
-        typeName: "Standart Gönderim",
-        status: "Depoda",
-        price: 15.5,
-        receiver: "Gökhan Karaca +905123456789",
-        sender: "Amazon"),
-    Package(
-        id: "6",
-        typeName: "Standart Gönderim",
-        status: "Depoda",
-        price: 15.5,
-        receiver: "Gökhan Karaca +905123456789",
-        sender: "Amazon"),
-    Package(
-        id: "7",
-        typeName: "Standart Gönderim",
-        status: "Depoda",
-        price: 15.5,
-        receiver: "Gökhan Karaca +905123456789",
-        sender: "Amazon"),
-    Package(
-        id: "8",
-        typeName: "Standart Gönderim",
-        status: "Depoda",
-        price: 15.5,
-        receiver: "Gökhan Karaca +905123456789",
-        sender: "Amazon"),
-    Package(
-        id: "9",
-        typeName: "Standart Gönderim",
-        status: "Depoda",
-        price: 15.5,
-        receiver: "Gökhan Karaca +905123456789",
-        sender: "Amazon"),
-    Package(
-        id: "10",
-        typeName: "Standart Gönderim",
-        status: "Depoda",
-        price: 15.5,
-        receiver: "Gökhan Karaca +905123456789",
-        sender: "Amazon"),
-  ];
-
   int crossAxisCount = 1;
+
+  late PackageStore packageStore;
+  late ThemeStore themeStore;
+
+  @override
+  void initState() {
+    super.initState();
+
+    () async {
+      await Future.delayed(Duration.zero);
+      await packageStore.fetchPackages();
+    }();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    RootStore rootStore = Provider.of<RootStore>(context);
+    packageStore = rootStore.packageStore;
+    themeStore = rootStore.themeStore;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,18 +68,30 @@ class _WaitingPackagesPageState extends State<WaitingPackagesPage> {
     return SizedBox(
       width: double.infinity,
       height: double.infinity,
-      child: GridView.count(
-        crossAxisCount: crossAxisCount,
-        mainAxisSpacing: 20,
-        crossAxisSpacing: 20,
-        childAspectRatio: crossAxisCount > 1 ? 1 : 16 / 9,
-        padding: const EdgeInsets.all(20),
-        children: packages.map((package) => buildPack(package)).toList(),
+      child: RefreshIndicator(
+        backgroundColor: themeStore.primaryColor,
+        onRefresh: () async {
+          await packageStore.fetchPackages();
+        },
+        child: Observer(builder: (context) {
+          return packageStore.packages.isNotEmpty
+              ? GridView.count(
+                  crossAxisCount: crossAxisCount,
+                  mainAxisSpacing: 20,
+                  crossAxisSpacing: 20,
+                  childAspectRatio: crossAxisCount > 1 ? 1 : 16 / 9,
+                  padding: const EdgeInsets.all(20),
+                  children: packageStore.packages
+                      .map((package) => buildPackContainer(package))
+                      .toList(),
+                )
+              : const Center(child: CircularProgressIndicator());
+        }),
       ),
     );
   }
 
-  Widget buildPack(Package package) {
+  Widget buildPackContainer(PackageModel package) {
     return GestureDetector(
       child: Container(
         decoration: BoxDecoration(
@@ -136,12 +102,14 @@ class _WaitingPackagesPageState extends State<WaitingPackagesPage> {
           children: [
             Text("Paket ID: ${package.id}"),
             Text("Tip: ${package.typeName}"),
-            Text("Fiyat: ${package.price} ₺")
+            Text("Fiyat: ${package.price} ₺"),
+            Text("Durum: ${package.status}")
           ],
         ),
       ),
       onTap: () {
-        Navigator.of(context).pushNamed(Routes.package, arguments: package);
+        packageStore.choosePackage(package);
+        Navigator.of(context).pushNamed(Routes.package);
       },
     );
   }

@@ -20,7 +20,6 @@ class _LoginPageState extends State<LoginPage> {
 
   bool loginIsStarted = false;
 
-  late RootStore rootStore;
   late ThemeStore themeStore;
   late AuthStore authStore;
 
@@ -37,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    rootStore = Provider.of<RootStore>(context);
+    RootStore rootStore = Provider.of<RootStore>(context);
     themeStore = rootStore.themeStore;
     authStore = rootStore.authStore;
   }
@@ -121,12 +120,19 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  startLoginRequest() {
-    authStore.login(phoneCnt.text);
+  Future startLoginRequest() async {
+    try {
+      await authStore.login(phoneCnt.text);
 
-    if (authStore.isLoggedIn) {
-      Navigator.of(context).pushReplacementNamed(Routes.home);
-    } else {
+      if (authStore.isLoggedIn) {
+        (await SharedPreferences.getInstance())
+            .setString("phoneNo", phoneCnt.text);
+        Navigator.of(context).pushReplacementNamed(Routes.home);
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("Bilgileriniz Hatalı")));
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Bilgileriniz Hatalı")));
     }
