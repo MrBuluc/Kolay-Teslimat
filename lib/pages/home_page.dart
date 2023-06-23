@@ -72,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text("Kolayca Teslimat"),
       ),
       drawer: const MyCustomDrawer(),
-      body: buildBody(),
+      body: buildMap(),
     );
   }
 

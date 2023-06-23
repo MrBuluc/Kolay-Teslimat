@@ -21,8 +21,8 @@ class PackageService {
 
   Future<PackageModel> moveToCar(int packageId) async {
     try {
-      Response response =
-          await dio.put(API.getUrl("packages/show/$packageId/move-to-car"));
+      Response response = await dio.put(API.getUrl("move-to-car"),
+          queryParameters: {"packageId": packageId});
       return PackageModel.fromJson(response.data["package"]);
     } catch (e) {
       rethrow;

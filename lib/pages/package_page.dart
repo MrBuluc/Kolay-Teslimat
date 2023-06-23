@@ -76,8 +76,14 @@ class _PackagePageState extends State<PackagePage> {
           packageStore.package?.typeName ?? "",
           style: const TextStyle(fontSize: 16),
         ),
-        Text("₺${packageStore.package?.price}")
+        Text(
+          "₺${packageStore.package?.price}",
+          style: const TextStyle(fontSize: 16),
+        )
       ]);
+
+  Widget buildReceiverInfo() =>
+      buildPersonInfo(true, packageStore.package?.receiver);
 
   Widget buildPersonInfo(bool isReceiver, PackagePersonModel? person) =>
       MyCard(children: [
@@ -104,9 +110,6 @@ class _PackagePageState extends State<PackagePage> {
           style: const TextStyle(fontSize: 16),
         )
       ]);
-
-  Widget buildReceiverInfo() =>
-      buildPersonInfo(true, packageStore.package?.receiver);
 
   Widget buildSenderInfo() =>
       buildPersonInfo(false, packageStore.package?.sender);
