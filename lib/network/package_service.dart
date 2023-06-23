@@ -9,7 +9,7 @@ class PackageService {
 
   Future<List<PackageModel>> getPackages() async {
     try {
-      Response response = await dio.get(API.getUrl("get-packages"));
+      Response response = await dio.get(API.getUrl("get-filter-packages"));
 
       return (response.data["packages"] as List).map((json) {
         return PackageModel.fromJson(json);
