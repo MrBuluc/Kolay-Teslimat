@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "regular_users",
+  "info": {
+    "singularName": "regular-user",
+    "pluralName": "regular-users",
+    "displayName": "RegularUser",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "firstName": {
+      "type": "string",
+      "required": true
+    },
+    "lastName": {
+      "type": "string",
+      "required": true
+    },
+    "phoneNumber": {
+      "type": "string",
+      "required": true
+    },
+    "balanceAmount": {
+      "type": "decimal",
+      "default": 0
+    },
+    "token": {
+      "type": "string",
+      "required": true
+    }
+  }
+}
