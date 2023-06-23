@@ -1,0 +1,14 @@
+{
+  "name": "populate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "populate.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "8.0.2"
+  },
+  "author": "Mr. Bülüç",
+  "license": "ISC"
+}
