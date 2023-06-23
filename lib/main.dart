@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:kolayca_teslimat/injector.dart' as injector;
 import 'package:kolayca_teslimat/pages/splash_page.dart';
@@ -8,6 +9,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: "assets/.env");
   await injector.init();
   runApp(MultiProvider(providers: [
     Provider.value(value: injector.serviceLocator.get<RootStore>())

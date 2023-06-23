@@ -59,9 +59,10 @@ class _TakePhotoPageState extends State<TakePhotoPage> {
         onPressed: () async {
           try {
             XFile file = await controller.takePicture();
+
             print("file.path: ${file.path}");
           } catch (e) {
-            print(e);
+            print("error: $e");
           }
         },
       ),

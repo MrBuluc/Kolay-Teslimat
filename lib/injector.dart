@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:kolayca_teslimat/network/auth_service.dart';
 import 'package:kolayca_teslimat/network/package_service.dart';
@@ -21,8 +22,10 @@ Future init() async {
   Dio dio = serviceLocator.get<Dio>();
   dio.interceptors.add(InterceptorsWrapper(
       onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
+    options.headers
+        .putIfAbsent("Authorization", () => "Bearer ${dotenv.env["apiKey"]}");
     if (sharedPreferences.containsKey("TOKEN")) {
-      options.headers.putIfAbsent("Authorization",
+      options.headers.putIfAbsent("token",
           () => "Bearer ${sharedPreferences.getString("TOKEN") ?? ""}");
     }
 
