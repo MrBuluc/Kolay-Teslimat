@@ -25,10 +25,11 @@ Future init() async {
     options.headers
         .putIfAbsent("Authorization", () => "Bearer ${dotenv.env["apiKey"]}");
     if (sharedPreferences.containsKey("TOKEN")) {
-      options.headers.putIfAbsent("token",
-          () => "Bearer ${sharedPreferences.getString("TOKEN") ?? ""}");
+      options.headers
+          .putIfAbsent("token", () => sharedPreferences.getString("TOKEN"));
     }
 
+    options.headers["Content-Type"] = "application/json";
     return handler.next(options);
   }));
 

@@ -9,11 +9,11 @@ class PackageService {
 
   Future<List<PackageModel>> getPackages() async {
     try {
-      Response response = await dio.get(API.getUrl("packages"));
+      Response response = await dio.get(API.getUrl("get-packages"));
 
-      return (response.data["packages"] as List)
-          .map((row) => PackageModel.fromJson(row))
-          .toList();
+      return (response.data["packages"] as List).map((json) {
+        return PackageModel.fromJson(json);
+      }).toList();
     } catch (e) {
       rethrow;
     }
