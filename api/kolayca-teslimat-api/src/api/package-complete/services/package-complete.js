@@ -69,7 +69,7 @@ module.exports = () => ({
         }
       });
 
-      await strapi.entityService.update(
+      const updatedPackage = await strapi.entityService.update(
         "api::package.package",
         chosenPackage.id,
         {
@@ -78,7 +78,7 @@ module.exports = () => ({
         }
       );
 
-      return { message: "Package Complete Done" };
+      return { package: updatedPackage };
     } catch (error) {
       console.error("packageComplete service:", error);
     }
