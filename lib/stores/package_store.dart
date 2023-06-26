@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:collection/collection.dart';
 import 'package:kolayca_teslimat/injector.dart';
 import 'package:kolayca_teslimat/models/package_model.dart';
@@ -13,6 +14,9 @@ abstract class _PackageStore with Store {
 
   @observable
   List<PackageModel> packages = ObservableList.of([]);
+
+  @observable
+  List<PackageRouteModel> routes = ObservableList.of([]);
 
   @observable
   int? chosenPackageId;
@@ -41,5 +45,22 @@ abstract class _PackageStore with Store {
   Future moveToCar() async {
     packages[packages.indexOf(package!)] =
         await packageService.moveToCar(package!.id);
+  }
+
+  @action
+  Future complete(XFile file) async {
+    packages[packages.indexOf(package!)] =
+        await packageService.complete(chosenPackageId!, file);
+  }
+
+  @action
+  Future route(num latitude, num longitude) async {
+    try {
+      routes.clear();
+      routes.addAll(await packageService.routing(latitude, longitude));
+    } catch (e) {
+      print("PackageStore route Error: $e");
+      throw Exception("Failed to fetch packages");
+    }
   }
 }
