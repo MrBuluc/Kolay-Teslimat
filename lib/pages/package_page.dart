@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:kolayca_teslimat/models/package_model.dart';
@@ -129,9 +130,14 @@ class _PackagePageState extends State<PackagePage> {
           packageStore.package?.responsibleUserId == authStore.user?.id
       ? ElevatedButton(
           child: const Text("Teslim Et"),
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => const TakePhotoPage()));
+          onPressed: () async {
+            var photoPageResult = await Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (BuildContext context) => const TakePhotoPage()));
+
+            if (photoPageResult is XFile) {
+              await packageStore.complete(photoPageResult);
+            }
           },
         )
       : const SizedBox.shrink();

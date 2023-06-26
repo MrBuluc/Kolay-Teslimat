@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +12,8 @@ class TakePhotoPage extends StatefulWidget {
 
 class _TakePhotoPageState extends State<TakePhotoPage> {
   late CameraController controller;
+
+  XFile? takenPhoto;
 
   @override
   void initState() {
@@ -51,21 +55,38 @@ class _TakePhotoPageState extends State<TakePhotoPage> {
     }
 
     return Scaffold(
-      body: Center(
-        child: CameraPreview(controller),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.camera_alt),
-        onPressed: () async {
-          try {
-            XFile file = await controller.takePicture();
+      body: takenPhoto != null
+          ? Center(
+              child: Image.file(File(takenPhoto!.path)),
+            )
+          : Center(
+              child: CameraPreview(controller),
+            ),
+      floatingActionButton: takenPhoto != null
+          ? FloatingActionButton(
+              child: const Icon(Icons.check),
+              onPressed: () {
+                Navigator.of(context).pop(takenPhoto);
+              },
+            )
+          : FloatingActionButton(
+              child: const Icon(Icons.camera_alt),
+              onPressed: () async {
+                try {
+                  if (controller == null || !controller.value.isInitialized) {
+                    return;
+                  }
+                  XFile file = await controller.takePicture();
+                  setState(() {
+                    takenPhoto = file;
+                  });
 
-            print("file.path: ${file.path}");
-          } catch (e) {
-            print("error: $e");
-          }
-        },
-      ),
+                  print("file.path: ${file.path}");
+                } catch (e) {
+                  print("error: $e");
+                }
+              },
+            ),
     );
   }
 }
